@@ -1,0 +1,33 @@
+Summary: Collabnet Metrics Monitor Daemon
+Name: metrics_monitor
+Version: 1.0
+Release: 5
+Group: Applications/
+Packager: Rajesh Vadivelu
+BuildRoot: ${files.dir}
+BuildArch: x86_64
+License: Collabnet Inc.
+URL: http://www.collab.net
+Requires : bc, nc, dstat
+
+%prep
+echo %_buildrootdir
+rm -rf %_buildrootdir/%{name}-%{version}-%{release}.%{buildarch}
+mkdir %_buildrootdir/%{name}-%{version}-%{release}.%{buildarch}
+cp -r ${files.dir}/* %_buildrootdir/%{name}-%{version}-%{release}.%{buildarch}
+
+%description
+RPM to install the Collabnet Metrics Monitor.
+
+%files
+%defattr(-,root,root)
+/var/ops/monitor
+/etc/init.d/metrics_monitor
+
+%post
+chmod 755 /var/ops/monitor/* -R
+chmod 755 /etc/init.d/metrics_monitor
+/sbin/chkconfig --add metrics_monitor
+
+%preun
+/etc/init.d/metrics_monitor stop

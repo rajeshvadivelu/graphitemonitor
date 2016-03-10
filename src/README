@@ -1,0 +1,60 @@
+Collabnet Metrics Monitor
+-------------------------
+Owner : CERT team, CollabNet. Inc.
+Version : 1.0
+Release : 4
+Mail : dev-cert_cee_engineering@forge.collab.net
+
+This utility sends monitored results to the centralized graphite based monitoring system.
+By default to metrics.collab.net
+
+How is this structured?
+----------------------
+- bin
+  "bin" directory has all executables, that runs the whole monitor utility
+
+- conf
+  Has the configuration file to configure the target graphite server
+
+- script-snips
+  This folder got all script snips that the parent script from bin directory runs.
+  Every script in this snip should print result in below format
+
+  <name> <value>
+  name like => cust.$HOST.<category>.<type>.<metric>
+       for example => cust." host_name ".db.conn.now , which means 
+               current value of conneciton type under db category
+
+- templates
+  This folder has some known templates that can be used. 
+  All that needs to be done is copy the required template to "script-snips" folder and make it as executable.
+
+How to check if the script-snips are fine?
+------------------------------------------
+
+Just run "/var/ops/monitor/bin/scripts_wrapper.sh"
+This will execute all scripts under script-snips and print response.
+Sample response will be as below...
+
+cust.teamforge_ctf_pe_vce_com.ctf.apache.busy_workers 1
+cust.teamforge_ctf_pe_vce_com.ctf.apache.idle_workers 29
+cust.teamforge_ctf_pe_vce_com.ctf.apache.bytes_per_sec 77963.2
+cust.teamforge_ctf_pe_vce_com.ctf.apache.bytes_per_req 5980.7
+cust.teamforge_ctf_pe_vce_com.ctf.apache.req_per_sec 13.0358
+cust.teamforge_ctf_pe_vce_com.custom.netapp.copytest 434.000
+cust.teamforge_ctf_pe_vce_com.db.stat.commit 31245818
+cust.teamforge_ctf_pe_vce_com.db.stat.read 1380783
+cust.teamforge_ctf_pe_vce_com.db.stat.ins 540335
+cust.teamforge_ctf_pe_vce_com.db.stat.upd 536641
+cust.teamforge_ctf_pe_vce_com.db.stat.del 381516
+
+How to stop / start metrics collection?
+----------------------------------------
+
+/etc/init.d/metrics_mointor governs the metrics collection.
+usage: /etc/init.d/metrics_monitor (start | stop | restart)
+
+How often was the metrics get collected?
+----------------------------------------
+For now, the metrics is collected for every 30s.
+It was not made configurable yet. But it will be soon.

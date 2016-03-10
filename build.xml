@@ -1,0 +1,53 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE project [
+]>
+
+<project name="Collabnet Metrics Monitor" default="buildrpm">
+
+  <!-- Required -->
+  <property name="component.name" value="metrics_monitor"/>
+  <property name="build.dir" value="${basedir}/build"/>
+  <property name="files.dir" value="${build.dir}/metrics_monitor"/>
+  <property name="local.dir" value="${files.dir}/var/ops/monitor"/>
+  <property name="init.dir" value="${files.dir}/etc/init.d"/>
+
+  <target name="build" depends="buildspec">
+      <copy todir="${init.dir}">
+          <fileset dir="${basedir}/init" includes="metrics_monitor" excludes="**/.svn"/>
+      </copy>
+      <copy todir="${local.dir}">
+          <fileset dir="${basedir}/src" excludes="**/.svn"/>
+      </copy>
+  </target>
+
+  <target name="buildrpm" depends="buildspec,build">
+    <exec executable="rpmbuild" dir="build">
+      <arg value="-bb"/>
+      <arg value="metrics_monitor.spec"/>
+    </exec>
+  </target>
+
+  <target name="buildspec" depends="init">
+    <echo message="Creating build spec from metrics_monitor.antspec"/>
+    <concat destfile="${build.dir}/metrics_monitor.spec">
+      <path>
+        <fileset dir="${basedir}" includes="metrics_monitor.antspec"/>
+      </path>
+      <filterchain>
+        <expandproperties/>
+      </filterchain>
+    </concat>
+  </target>
+
+  <target name="init">
+    <mkdir dir="${build.dir}"/>
+    <mkdir dir="${files.dir}"/>
+    <mkdir dir="${local.dir}"/>
+    <mkdir dir="${init.dir}"/>
+  </target>
+
+  <target name="clean">
+    <delete dir="build"/>
+  </target>
+
+</project>

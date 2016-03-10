@@ -1,0 +1,16 @@
+#! /bin/sh
+
+HOST="$1"
+
+start_time=`date +%s%3N`
+expect << EOF
+log_user 0
+set timeout 20
+spawn -noecho ldapsearch -H ldap://host:port -x -D CN=xxxx,OU=xxx,OU=xxxx,DC=xxx,DC=xxx,DC=xxx -b DC=xxx,DC=xxx,DC=xxxx -w xxxx "(&(objectclass=User)(sAMAccountName=testuser))"  -s sub displayName
+expect -re ".*Success"
+log_user 1
+EOF
+end_time=`date +%s%3N`
+elapsed_time=`expr $end_time - $start_time`
+echo "cust.$HOST.custom.custldap.responsetime $elapsed_time"
+

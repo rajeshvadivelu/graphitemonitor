@@ -1,0 +1,23 @@
+#! /bin/sh
+
+HOST="$1"
+TARGET_HOST=127.0.0.1
+TARGET_PORT=80
+
+run_telnet() {
+ expect << EOF
+log_user 0
+set timeout 10
+spawn telnet $TARGET_HOST $TARGET_PORT
+expect -re ".*]"
+send "close\r"
+log_user 1
+EOF
+}
+
+start_time=`date +%s%3N`
+run_telnet
+end_time=`date +%s%3N`
+elapsed_time=`expr $end_time - $start_time`
+echo "cust.$HOST.custom.custldap.telnettime $elapsed_time"
+
